@@ -37,7 +37,7 @@ Each example has a swift and go file that contain the same logic.
 
 **Go**
 
-```
+```go
 package main
 
 import "fmt"
@@ -72,7 +72,7 @@ func main() {
 
 **Swift**
 
-```
+```swift
 func main() {
 	var jobs = Chan<Int>(buffer: 5)
 	var done = Chan<Bool>()
