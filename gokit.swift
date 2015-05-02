@@ -69,6 +69,7 @@ class Once {
     func doit(closure:()->()){
         mutex.lock()
         if oncer{
+            mutex.unlock()
             return
         }
         oncer = true
