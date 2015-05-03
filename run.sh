@@ -16,7 +16,10 @@ f="$@"
 ext=${f##*.}
 
 if [[ "$ext" == "swift" ]]; then
-	cat gokit.swift "$f" > /tmp/gokit-main.swift
+	cat gokit.swift > /tmp/gokit-main.swift
+	echo "private var printmut = Mutex();func print(value: Any){printmut.lock {\"\\(value)\".writeToFile(\"/dev/stdout\", atomically:false, encoding:NSUTF8StringEncoding, error:nil)}}" >> /tmp/gokit-main.swift
+	echo "func println(value: Any){print(\"\\(value)\\n\")}" >> /tmp/gokit-main.swift
+	cat "$f" >> /tmp/gokit-main.swift
 	echo "" >> /tmp/gokit-main.swift
 	echo "main()" >> /tmp/gokit-main.swift
 	swift /tmp/gokit-main.swift

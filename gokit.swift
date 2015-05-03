@@ -1,13 +1,13 @@
-/* 
- * GoKit (gokit.swift)
- *
- * Copyright (C) 2015 ONcast, LLC. All Rights Reserved.
- * Created by Josh Baker (joshbaker77@gmail.com)
- *
- * This software may be modified and distributed under the terms
- * of the MIT license.  See the LICENSE file for details.
- *
- */
+/*
+* GoKit (gokit.swift)
+*
+* Copyright (C) 2015 ONcast, LLC. All Rights Reserved.
+* Created by Josh Baker (joshbaker77@gmail.com)
+*
+* This software may be modified and distributed under the terms
+* of the MIT license.  See the LICENSE file for details.
+*
+*/
 
 import Foundation
 
@@ -100,6 +100,8 @@ class WaitGroup {
         cond.locker.unlock()
     }
 }
+
+// MARK: - Lang -
 protocol ChanAny {
     func receive(wait : Bool, mutex : Mutex?, inout flag : Bool) -> (msg : Any?, ok : Bool, ready : Bool)
     func send(msg : Any?)
@@ -345,7 +347,7 @@ private class GoRoutine {
                 var mutex = Mutex()
                 for i in idxs {
                     var (c, f, ci) = (s.chans[i], s.cases[i], i)
-                    NSOperationQueue().addOperationWithBlock {
+                    dispatch_async(dispatch_queue_create(nil, nil)){
                         var (msg, ok, ready) = c.receive(true, mutex: mutex, flag: &flag)
                         if ready {
                             signal(except: ci)
@@ -379,9 +381,10 @@ private class GoRoutine {
     
 }
 private class GoApp {
+    typealias QueueID = UnsafeMutablePointer<Void>
     private var gocount = 0
     private var mutex = pthread_mutex_t()
-    private var routines = [UInt: GoRoutine]()
+    private var routines = [QueueID: GoRoutine]()
     init(){
         pthread_mutex_init(&mutex, nil)
     }
@@ -394,12 +397,8 @@ private class GoApp {
     func unlock(){
         pthread_mutex_unlock(&mutex)
     }
-    var queueID : UInt {
-        let oq = NSOperationQueue.currentQueue()
-        if oq == nil  {
-            fatalError("missing go{} context")
-        }
-        return ObjectIdentifier(oq!).uintValue
+    var queueID : QueueID {
+        return QueueID(pthread_self())
     }
     func routine() -> GoRoutine {
         let id = queueID
@@ -435,7 +434,7 @@ private class GoApp {
         
     }
     func go(closure: ()->()){
-        NSOperationQueue().addOperationWithBlock(){
+        dispatch_async(dispatch_queue_create(nil, nil)){
             self._go(closure)
         }
     }
@@ -465,14 +464,4 @@ func _case<T>(l : Chan<T>, file : StaticString = __FILE__, line : UWord = __LINE
 }
 func _default(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
     goapp.routine().default_(file: file, line: line, closure: closure)
-}
-
-private var printmut = Mutex()
-func print(value: Any){
-    printmut.lock {
-        "\(value)".writeToFile("/dev/stdout", atomically:false, encoding:NSUTF8StringEncoding, error:nil)
-    }
-}
-func println(value: Any){
-    print("\(value)\n")
 }
