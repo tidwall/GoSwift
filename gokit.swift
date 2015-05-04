@@ -25,6 +25,7 @@ func dispatch_thread(block : ()->()){
     p.initialize(block)
     var t = pthread_t()
     pthread_create(&t, nil, pt_entry_fp, p)
+    pthread_detach(t)
 }
 protocol Locker {
     func lock()
@@ -459,7 +460,6 @@ func $(closure: ()->()){
 func go(closure: ()->()){
     goapp.go(closure)
 }
-
 func defer(file : StaticString = __FILE__, line : UWord = __LINE__, closure: ()->()){
     goapp.routine().defer(file: file, line: line, closure: closure)
 }
