@@ -11,6 +11,21 @@
 
 import Foundation
 
+private let pt_entry: @objc_block (UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void> = { (ctx) in
+    let np = UnsafeMutablePointer<()->()>(ctx)
+    np.memory()
+    np.destroy()
+    np.dealloc(1)
+    return nil
+}
+private var pt_entry_imp = imp_implementationWithBlock(unsafeBitCast(pt_entry, AnyObject.self))
+private let pt_entry_fp = CFunctionPointer<(UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void>>(pt_entry_imp)
+func dispatch_thread(block : ()->()){
+    let p = UnsafeMutablePointer<()->()>.alloc(1)
+    p.initialize(block)
+    var t = pthread_t()
+    pthread_create(&t, nil, pt_entry_fp, p)
+}
 protocol Locker {
     func lock()
     func unlock()
@@ -100,8 +115,6 @@ class WaitGroup {
         cond.locker.unlock()
     }
 }
-
-// MARK: - Lang -
 protocol ChanAny {
     func receive(wait : Bool, mutex : Mutex?, inout flag : Bool) -> (msg : Any?, ok : Bool, ready : Bool)
     func send(msg : Any?)
@@ -347,7 +360,7 @@ private class GoRoutine {
                 var mutex = Mutex()
                 for i in idxs {
                     var (c, f, ci) = (s.chans[i], s.cases[i], i)
-                    dispatch_async(dispatch_queue_create(nil, nil)){
+                    dispatch_thread {
                         var (msg, ok, ready) = c.receive(true, mutex: mutex, flag: &flag)
                         if ready {
                             signal(except: ci)
@@ -434,7 +447,7 @@ private class GoApp {
         
     }
     func go(closure: ()->()){
-        dispatch_async(dispatch_queue_create(nil, nil)){
+        dispatch_thread{
             self._go(closure)
         }
     }
