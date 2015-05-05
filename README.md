@@ -18,7 +18,7 @@ Just drop the `go.swift` file into your project.
 	- Closing
 - Sync Package
 	- Mutex, Cond, Once, WaitGroup
-
+- Error type
 
 ### Run an Example
 
