@@ -1,11 +1,11 @@
-## GoKit - Go Goodies for Swift.
+## GoSwift - Go Goodies for Swift.
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
 
 ### Installing
 
-Just drop the `gokit.swift` file into your project.
+Just drop the `goswift.swift` file into your project.
 
 ### Features
 
@@ -22,7 +22,7 @@ Just drop the `gokit.swift` file into your project.
 
 ### Run an Example
 
-Using terminal clone this repository and enter the gokit directory.
+Using terminal clone this repository and enter the goswift directory.
 Each example has a swift and go file that contain the same logic.
 
 ```
@@ -105,7 +105,7 @@ func main() {
 
 ### License
 
-The GoKit source code available under the MIT License.
+The GoSwift source code available under the MIT License.
 
 The Go source code in the `examples` directory is copyright Mark McGranaghan and licensed under a
 [Creative Commons Attribution 3.0 Unported License](http://creativecommons.org/licenses/by/3.0/).

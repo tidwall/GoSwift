@@ -16,13 +16,13 @@ f="$@"
 ext=${f##*.}
 
 if [[ "$ext" == "swift" ]]; then
-	cat gokit.swift > /tmp/gokit-main.swift
-	echo "private var printmut = Mutex();func print(value: Any){printmut.lock {\"\\(value)\".writeToFile(\"/dev/stdout\", atomically:false, encoding:NSUTF8StringEncoding, error:nil)}}" >> /tmp/gokit-main.swift
-	echo "func println(value: Any){print(\"\\(value)\\n\")}" >> /tmp/gokit-main.swift
-	cat "$f" >> /tmp/gokit-main.swift
-	echo "" >> /tmp/gokit-main.swift
-	echo "main()" >> /tmp/gokit-main.swift
-	swift /tmp/gokit-main.swift
+	cat goswift.swift > /tmp/goswift-main.swift
+	echo "private var printmut = Mutex();func print(value: Any){printmut.lock {\"\\(value)\".writeToFile(\"/dev/stdout\", atomically:false, encoding:NSUTF8StringEncoding, error:nil)}}" >> /tmp/goswift-main.swift
+	echo "func println(value: Any){print(\"\\(value)\\n\")}" >> /tmp/goswift-main.swift
+	cat "$f" >> /tmp/goswift-main.swift
+	echo "" >> /tmp/goswift-main.swift
+	echo "main()" >> /tmp/goswift-main.swift
+	swift /tmp/goswift-main.swift
 elif [[ "$ext" == "go" ]]; then
 	GOMAXPROCS=4 go run "$f"
 else 

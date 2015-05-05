@@ -1,5 +1,5 @@
 /*
-* GoKit (gokit.swift)
+* GoSwift (goswift.swift)
 *
 * Copyright (C) 2015 ONcast, LLC. All Rights Reserved.
 * Created by Josh Baker (joshbaker77@gmail.com)
@@ -11,6 +11,21 @@
 
 import Foundation
 
+public typealias Error = NSError
+extension Error : Printable, Equatable {
+    func error() -> String {
+        return description
+    }
+    convenience init(error : String){
+        self.init(domain: "goswift", code: -1, userInfo: [NSLocalizedDescriptionKey:error])
+    }
+    override public var description : String {
+        return localizedDescription
+    }
+}
+public func ==(lhs: Error, rhs: Error) -> Bool {
+    return lhs.description == rhs.description
+}
 private let pt_entry: @objc_block (UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void> = { (ctx) in
     let np = UnsafeMutablePointer<()->()>(ctx)
     np.memory()
