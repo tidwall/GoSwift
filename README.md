@@ -5,7 +5,7 @@ Bring some of the more powerful features of Go to your iOS / Swift project such 
 
 ### Installing
 
-Just drop the `goswift.swift` file into your project.
+Just drop the `go.swift` file into your project.
 
 ### Features
 

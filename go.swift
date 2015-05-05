@@ -1,5 +1,5 @@
 /*
-* GoSwift (goswift.swift)
+* GoSwift (go.swift)
 *
 * Copyright (C) 2015 ONcast, LLC. All Rights Reserved.
 * Created by Josh Baker (joshbaker77@gmail.com)
