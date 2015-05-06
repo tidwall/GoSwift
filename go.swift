@@ -136,6 +136,8 @@ protocol ChanAny {
     func send(msg : Any?)
     func close()
     func signal()
+    func count() -> Int
+    func capacity() -> Int
 }
 class Chan<T> : ChanAny {
     private var msgs = [Any?]()
@@ -148,6 +150,15 @@ class Chan<T> : ChanAny {
     }
     init(buffer: Int){
         cap = buffer
+    }
+    func count() -> Int{
+        if cap == 0 {
+            return 0
+        }
+        return msgs.count
+    }
+    func capacity() -> Int{
+        return cap
     }
     func close(){
         cond.locker.lock()
@@ -250,6 +261,15 @@ prefix func <-<T>(r: Chan<T>) -> T?{
     var flag = false
     let (v, ok, ready) = r.receive(true, mutex: nil, flag: &flag)
     return v as? T
+}
+func close<T>(chan : Chan<T>){
+    chan.close()
+}
+func len<T>(chan : Chan<T>) -> Int{
+    return chan.count()
+}
+func cap<T>(chan : Chan<T>) -> Int{
+    return chan.capacity()
 }
 private struct GoPanicError {
     var what: AnyObject?
