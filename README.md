@@ -94,7 +94,7 @@ func main() {
 		jobs <- j
 		println("sent job \(j)")
 	}
-	jobs.close()
+	close(jobs)
 	println("sent all jobs")
 
 	<-done
