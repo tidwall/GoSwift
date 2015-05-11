@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "GoSwift"
-  s.version      = "0.0.4"
+  s.version      = "0.1.1"
   s.summary      = "Go Goodies for Swift. Including goroutines, channels, defer, and panic."
   s.homepage     = "https://github.com/tidwall/GoSwift"
   s.license      = { :type => "Attribution License", :file => "LICENSE" }
