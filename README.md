@@ -1,4 +1,4 @@
-#GoSwift - Go Goodies for Swift.
+#GoSwift - Go Goodies for Swift
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
