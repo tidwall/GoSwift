@@ -35,18 +35,18 @@ private let pt_entry: @objc_block (UnsafeMutablePointer<Void>) -> UnsafeMutableP
 }
 private var pt_entry_imp = imp_implementationWithBlock(unsafeBitCast(pt_entry, AnyObject.self))
 private let pt_entry_fp = CFunctionPointer<(UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void>>(pt_entry_imp)
-func dispatch_thread(block : ()->()){
+public func dispatch_thread(block : ()->()){
     let p = UnsafeMutablePointer<()->()>.alloc(1)
     p.initialize(block)
     var t = pthread_t()
     pthread_create(&t, nil, pt_entry_fp, p)
     pthread_detach(t)
 }
-protocol Locker {
+public protocol Locker {
     func lock()
     func unlock()
 }
-class Mutex : Locker {
+public class Mutex : Locker {
     private var mutex = pthread_mutex_t()
     init(){
         pthread_mutex_init(&mutex, nil)
@@ -54,10 +54,10 @@ class Mutex : Locker {
     deinit{
         pthread_mutex_destroy(&mutex)
     }
-    func lock(){
+    public func lock(){
         pthread_mutex_lock(&mutex)
     }
-    func unlock(){
+    public func unlock(){
         pthread_mutex_unlock(&mutex)
     }
     func lock(closure:()->()){
@@ -66,7 +66,7 @@ class Mutex : Locker {
         unlock()
     }
 }
-class Cond {
+public class Cond {
     private var cond = pthread_cond_t()
     private var mutex : Mutex
     init(locker : Locker){
@@ -94,7 +94,7 @@ class Cond {
         pthread_cond_wait(&cond, &mutex.mutex)
     }
 }
-class Once {
+public class Once {
     private var mutex = Mutex()
     private var oncer = false
     func doit(closure:()->()){
@@ -108,7 +108,7 @@ class Once {
         mutex.unlock()
     }
 }
-class WaitGroup {
+public class WaitGroup {
     private var cond = Cond(locker: Mutex())
     private var count = 0
     func add(delta : Int){
@@ -131,7 +131,7 @@ class WaitGroup {
         cond.locker.unlock()
     }
 }
-protocol ChanAny {
+public protocol ChanAny {
     func receive(wait : Bool, mutex : Mutex?, inout flag : Bool) -> (msg : Any?, ok : Bool, ready : Bool)
     func send(msg : Any?)
     func close()
@@ -139,7 +139,7 @@ protocol ChanAny {
     func count() -> Int
     func capacity() -> Int
 }
-class Chan<T> : ChanAny {
+public class Chan<T> : ChanAny {
     private var msgs = [Any?]()
     private var cap = 0
     private var cond = Cond(locker: Mutex())
@@ -151,16 +151,16 @@ class Chan<T> : ChanAny {
     init(buffer: Int){
         cap = buffer
     }
-    func count() -> Int{
+    public func count() -> Int{
         if cap == 0 {
             return 0
         }
         return msgs.count
     }
-    func capacity() -> Int{
+    public func capacity() -> Int{
         return cap
     }
-    func close(){
+    public func close(){
         cond.locker.lock()
         if !closed {
             closed = true
@@ -168,7 +168,7 @@ class Chan<T> : ChanAny {
         }
         cond.locker.unlock()
     }
-    func send(msg: Any?) {
+    public func send(msg: Any?) {
         cond.locker.lock()
         if closed {
             cond.locker.unlock()
@@ -181,7 +181,7 @@ class Chan<T> : ChanAny {
         }
         cond.locker.unlock()
     }
-    func receive(wait : Bool, mutex : Mutex?, inout flag : Bool) -> (msg : Any?, ok : Bool, ready : Bool) {
+    public func receive(wait : Bool, mutex : Mutex?, inout flag : Bool) -> (msg : Any?, ok : Bool, ready : Bool) {
         // Peek
         if !wait {
             cond.locker.lock()
@@ -242,33 +242,33 @@ class Chan<T> : ChanAny {
             cond.wait()
         }
     }
-    func signal(){
+    public func signal(){
         cond.broadcast()
     }
 }
 infix operator <- { associativity right precedence 155 }
 prefix operator <- { }
 prefix operator <? { }
-func <-<T>(l: Chan<T>, r: T?){
+public func <-<T>(l: Chan<T>, r: T?){
     l.send(r)
 }
-prefix func <?<T>(r: Chan<T>) -> (T?, Bool){
+public prefix func <?<T>(r: Chan<T>) -> (T?, Bool){
     var flag = false
     let (v, ok, ready) = r.receive(true, mutex: nil, flag: &flag)
     return (v as? T, ok)
 }
-prefix func <-<T>(r: Chan<T>) -> T?{
+public prefix func <-<T>(r: Chan<T>) -> T?{
     var flag = false
     let (v, ok, ready) = r.receive(true, mutex: nil, flag: &flag)
     return v as? T
 }
-func close<T>(chan : Chan<T>){
+public func close<T>(chan : Chan<T>){
     chan.close()
 }
-func len<T>(chan : Chan<T>) -> Int{
+public func len<T>(chan : Chan<T>) -> Int{
     return chan.count()
 }
-func cap<T>(chan : Chan<T>) -> Int{
+public func cap<T>(chan : Chan<T>) -> Int{
     return chan.capacity()
 }
 private struct GoPanicError {
@@ -489,27 +489,27 @@ private class GoApp {
     }
 }
 private let goapp = GoApp()
-func $(closure: ()->()){
+public func $(closure: ()->()){
     goapp.routine().$(closure)
 }
-func go(closure: ()->()){
+public func go(closure: ()->()){
     goapp.go(closure)
 }
-func defer(file : StaticString = __FILE__, line : UWord = __LINE__, closure: ()->()){
+public func defer(file : StaticString = __FILE__, line : UWord = __LINE__, closure: ()->()){
     goapp.routine().defer(file: file, line: line, closure: closure)
 }
-func panic(what : AnyObject, file : StaticString = __FILE__, line : UWord = __LINE__){
+public func panic(what : AnyObject, file : StaticString = __FILE__, line : UWord = __LINE__){
     goapp.routine().panic(what, file: file, line: line)
 }
-func recover(file : StaticString = __FILE__, line : UWord = __LINE__) -> AnyObject? {
+public func recover(file : StaticString = __FILE__, line : UWord = __LINE__) -> AnyObject? {
     return goapp.routine().recover(file: file, line: line)
 }
-func select(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
+public func select(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
     goapp.routine().select(file: file, line: line, closure: closure)
 }
-func _case<T>(l : Chan<T>, file : StaticString = __FILE__, line : UWord = __LINE__, closure:(msg : T?, ok : Bool)->()) {
+public func _case<T>(l : Chan<T>, file : StaticString = __FILE__, line : UWord = __LINE__, closure:(msg : T?, ok : Bool)->()) {
     goapp.routine().case_(l, file: file, line: line, closure: { (msg, ok) in closure(msg: msg as? T, ok: ok) })
 }
-func _default(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
+public func _default(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
     goapp.routine().default_(file: file, line: line, closure: closure)
 }
