@@ -13,10 +13,10 @@ import Foundation
 
 public typealias Error = NSError
 extension Error : Printable, Equatable {
-    func error() -> String {
+    public func error() -> String {
         return description
     }
-    convenience init(error : String){
+    convenience public init(error : String){
         self.init(domain: "goswift", code: -1, userInfo: [NSLocalizedDescriptionKey:error])
     }
     override public var description : String {
