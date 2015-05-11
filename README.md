@@ -2,6 +2,18 @@
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
+##Features
+
+- Goroutines
+- Defer
+- Panic, Recover
+- Channels
+	- Buffered Channels
+	- Select, Case, Default
+	- Closing
+- Sync Package
+	- Mutex, Cond, Once, WaitGroup
+- Error type
 
 ##Install (iOS and OS X)
 
@@ -24,19 +36,6 @@ The `import GoSwift` directive is required in order to access GoSwift features.
 Just drop the `go.swift` file into your project.
 
 There is no need for `import GoSwift` when manually installing.
-
-##Features
-
-- Goroutines
-- Defer
-- Panic, Recover
-- Channels
-	- Buffered Channels
-	- Select, Case, Default
-	- Closing
-- Sync Package
-	- Mutex, Cond, Once, WaitGroup
-- Error type
 
 ##Run an Example
 
