@@ -1,13 +1,31 @@
-## GoSwift - Go Goodies for Swift.
+##GoSwift - Go Goodies for Swift.
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
 
-### Installing
+###Install (iOS and OS X)
+
+####CocoaPods
+
+You can use [CocoaPods](http://cocoapods.org/?q=GoSwift) to install the `GoSwift` framework.
+
+Add the following lines to your `Podfile`.
+
+```ruby
+use_frameworks!
+pod 'GoSwift'
+```
+
+The `import GoSwift` directive is required in order to access GoSwift features.
+
+
+####Manual
 
 Just drop the `go.swift` file into your project.
 
-### Features
+There is no need for `import GoSwift` when manually installing.
+
+###Features
 
 - Goroutines
 - Defer
@@ -20,7 +38,7 @@ Just drop the `go.swift` file into your project.
 	- Mutex, Cond, Once, WaitGroup
 - Error type
 
-### Run an Example
+###Run an Example
 
 Using terminal clone this repository and enter the goswift directory.
 Each example has a swift and go file that contain the same logic.
@@ -31,7 +49,7 @@ Each example has a swift and go file that contain the same logic.
 ```
 
 
-### Example
+###Example
 
 *Note that the following example and all of the examples in the `example` directory originated from http://gobyexample.com and Mark McGranaghan*
 
@@ -102,6 +120,8 @@ func main() {
 
 ```
 
+### Contact
+Josh Baker [@tidwall](http://twitter.com/tidwall)
 
 ### License
 
