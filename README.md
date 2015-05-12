@@ -31,7 +31,7 @@ pod 'GoSwift'
 The `import GoSwift` directive is required in order to access GoSwift features.
 
 
-###Manual
+###Drop-in
 
 Just drop the `go.swift` file into your project.
 
