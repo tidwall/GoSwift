@@ -16,8 +16,8 @@ profile
 *.moved-aside
 DerivedData
 .idea/
-# Pods - for those of you who use CocoaPods
 Pods
+Carthage/Build
 play.swift
 play.go
 
