@@ -17,7 +17,7 @@ Bring some of the more powerful features of Go to your iOS / Swift project such 
 
 ##Example
 
-*Note that the following example and all of the examples in the `example` directory originated from http://gobyexample.com and Mark McGranaghan*
+*Note that the following example and all of the examples in the `examples` directory originated from http://gobyexample.com and Mark McGranaghan*
 
 **Go**
 
