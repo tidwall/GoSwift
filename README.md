@@ -88,8 +88,7 @@ func main() {
 
 ###Run an Example
 
-Using terminal clone this repository and enter the goswift directory.
-Each example has a swift and go file that contain the same logic.
+Each example has a `.swift` and `.go` file that contain the same logic.
 
 ```
 ./run.sh examples/goroutines.swift
