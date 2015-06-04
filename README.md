@@ -15,39 +15,6 @@ Bring some of the more powerful features of Go to your iOS / Swift project such 
 	- Mutex, Cond, Once, WaitGroup
 - Error type
 
-##Install (iOS and OS X)
-
-###CocoaPods
-
-You can use [CocoaPods](http://cocoapods.org/?q=GoSwift) to install the `GoSwift` framework.
-
-Add the following lines to your `Podfile`.
-
-```ruby
-use_frameworks!
-pod 'GoSwift'
-```
-
-The `import GoSwift` directive is required in order to access GoSwift features.
-
-
-###Drop-in
-
-Just drop the `go.swift` file into your project.
-
-There is no need for `import GoSwift` when manually installing.
-
-##Run an Example
-
-Using terminal clone this repository and enter the goswift directory.
-Each example has a swift and go file that contain the same logic.
-
-```
-./run.sh examples/goroutines.swift
-./run.sh examples/goroutines.go
-```
-
-
 ##Example
 
 *Note that the following example and all of the examples in the `example` directory originated from http://gobyexample.com and Mark McGranaghan*
@@ -118,6 +85,59 @@ func main() {
 }
 
 ```
+
+###Run an Example
+
+Using terminal clone this repository and enter the goswift directory.
+Each example has a swift and go file that contain the same logic.
+
+```
+./run.sh examples/goroutines.swift
+./run.sh examples/goroutines.go
+```
+
+##Installation (iOS and OS X)
+
+### [Carthage]
+
+[Carthage]: https://github.com/Carthage/Carthage
+
+Add the following to your Cartfile:
+
+```
+github "tidwall/GoSwift"
+```
+
+Then run `carthage update`.
+
+Follow the current instructions in [Carthage's README][carthage-installation]
+for up to date installation instructions.
+
+[carthage-installation]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
+
+The `import GoSwift` directive is required in order to access GoSwift features.
+
+### [CocoaPods]
+
+[CocoaPods]: http://cocoapods.org
+
+Add the following to your [Podfile](http://guides.cocoapods.org/using/the-podfile.html):
+
+```ruby
+use_frameworks!
+pod 'GoSwift'
+```
+
+Then run `pod install` with CocoaPods 0.36 or newer.
+
+The `import GoSwift` directive is required in order to access GoSwift features.
+
+###Manually
+
+Copy the `GoSwift\go.swift` file into your project.  
+
+There is no need for `import GoSwift` when manually installing.
+
 
 ## Contact
 Josh Baker [@tidwall](http://twitter.com/tidwall)
