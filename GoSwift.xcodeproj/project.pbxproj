@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0311F57E1B20A06F003616AD /* GoSwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 0311F57D1B20A06F003616AD /* GoSwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0311F5951B20A138003616AD /* go.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0311F5941B20A138003616AD /* go.swift */; };
+		0311F5971B20A213003616AD /* run.sh in Resources */ = {isa = PBXBuildFile; fileRef = 0311F5961B20A213003616AD /* run.sh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -16,6 +17,7 @@
 		0311F57C1B20A06F003616AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0311F57D1B20A06F003616AD /* GoSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoSwift.h; sourceTree = "<group>"; };
 		0311F5941B20A138003616AD /* go.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = go.swift; sourceTree = "<group>"; };
+		0311F5961B20A213003616AD /* run.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = run.sh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +34,7 @@
 		0311F56E1B20A06F003616AD = {
 			isa = PBXGroup;
 			children = (
+				0311F5961B20A213003616AD /* run.sh */,
 				0311F57A1B20A06F003616AD /* GoSwift */,
 				0311F5791B20A06F003616AD /* Products */,
 			);
@@ -131,6 +134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0311F5971B20A213003616AD /* run.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
