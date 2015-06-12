@@ -13,7 +13,7 @@ func main() {
 
 	// Here we `make` a channel of strings buffering up to
 	// 2 values.
-	var messages = Chan<String>(buffer: 2)
+	var messages = Chan<String>(2)
 
 	// Because this channel is buffered, we can send these
 	// values into the channel without a corresponding

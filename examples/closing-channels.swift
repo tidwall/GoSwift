@@ -11,7 +11,7 @@
 // to a worker goroutine. When we have no more jobs for
 // the worker we'll `close` the `jobs` channel.
 func main() {
-	var jobs = Chan<Int>(buffer: 5)
+	var jobs = Chan<Int>(5)
 	var done = Chan<Bool>()
 
 	// Here's the worker goroutine. It repeatedly receives

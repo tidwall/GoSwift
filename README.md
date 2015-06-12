@@ -60,7 +60,7 @@ func main() {
 
 ```swift
 func main() {
-	var jobs = Chan<Int>(buffer: 5)
+	var jobs = Chan<Int>(5)
 	var done = Chan<Bool>()
 
 	go {

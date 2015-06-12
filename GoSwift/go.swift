@@ -146,7 +146,10 @@ public class Chan<T> : ChanAny {
     private var closed = false
     
     convenience init(){
-        self.init(buffer: 0)
+        self.init(0)
+    }
+    init(_ buffer: Int){
+        cap = buffer
     }
     init(buffer: Int){
         cap = buffer
