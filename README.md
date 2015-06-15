@@ -2,7 +2,7 @@
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
-**Built for Swift 2.0** - for Swift 1.2 support use v0.1.4 or earlier.
+**Built for Swift 2.0** - For Swift 1.2 support use v0.1.4 or earlier.
 
 ##Features
 
