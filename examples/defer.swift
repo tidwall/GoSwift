@@ -11,21 +11,14 @@
 // and then close when we're done. Here's how we could
 // do that with `defer`.
 func main() {
-	${  // ${} is required for 'defer', 'panic', 'recover'
-		// Immediately after getting a file object with
-		// `createFile`, we defer the closing of that file
-		// with `closeFile`. This will be executed at the end
-		// of the enclosing function (`main`), after
-		// `writeFile` has finished.
-		var f = createFile("/tmp/defer.txt")
-		defer { closeFile(f) }
-		writeFile(f)
-	}
+	let f = createFile("/tmp/defer.txt")
+	defer { closeFile(f) }
+	writeFile(f)
 }
 
 func createFile(p : String) -> UnsafeMutablePointer<FILE> {
 	println("creating")
-	var f = fopen(p, "wb+")
+	let f = fopen(p, "wb+")
 	if f == nil {
 		panic("file error")
 	}

@@ -22,7 +22,7 @@ func main() {
 
 	// Start a worker goroutine, giving it the channel to
 	// notify on.
-	var done = Chan<Bool>(1)
+	let done = Chan<Bool>(1)
 	go { worker(done) }
 
 	// Block until we receive a notification from the

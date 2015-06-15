@@ -8,7 +8,7 @@
 // aren't prepared to handle gracefully.
 
 func main() {
-	${  // ${} is required for 'defer', 'panic', 'recover'
+	${  // ${} is required for 'panic', 'recover'
 		// We'll use panic throughout this site to check for
 		// unexpected errors. This is the only program on the
 		// site designed to panic.
@@ -18,7 +18,7 @@ func main() {
 		// returns an error value that we don't know how to
 		// (or want to) handle. Here's an example of
 		// `panic`king if we get an unexpected error when creating a new file.
-		var f = fopen("/tmp/file", "wb+")
+		let f = fopen("/tmp/file", "wb+")
 		if f == nil {
 			panic("file error")
 		}

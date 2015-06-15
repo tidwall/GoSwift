@@ -11,8 +11,8 @@
 // to a worker goroutine. When we have no more jobs for
 // the worker we'll `close` the `jobs` channel.
 func main() {
-	var jobs = Chan<Int>(5)
-	var done = Chan<Bool>()
+	let jobs = Chan<Int>(5)
+	let done = Chan<Bool>()
 
 	// Here's the worker goroutine. It repeatedly receives
 	// from `jobs` with `j, more := <-jobs`. In this
@@ -23,7 +23,7 @@ func main() {
 	// all our jobs.
 	go {
 		for ;; {
-			var (j, more) = <?jobs
+			let (j, more) = <?jobs
 			if more {
 				println("received job \(j!)")
 			} else {

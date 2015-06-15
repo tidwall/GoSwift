@@ -9,8 +9,8 @@
 func main() {
 
 	// For our example we'll select across two channels.
-	var c1 = Chan<String>()
-	var c2 = Chan<String>()
+	let c1 = Chan<String>()
+	let c2 = Chan<String>()
 
 	// Each channel will receive a value after some amount
 	// of time, to simulate e.g. blocking RPC operations

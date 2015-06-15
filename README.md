@@ -2,7 +2,7 @@
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
-***Note: Swift 2 now includes the builtin `defer` keyword. At the moment GoSwift is not compatible with Swift 2.*** *A new version of GoSwift is in the works.*
+**Built for Swift 2.0** For Swift 1.2 support use *v0.1.4* or earlier.
 
 ##Features
 
@@ -15,7 +15,6 @@ Bring some of the more powerful features of Go to your iOS / Swift project such 
 	- Closing
 - Sync Package
 	- Mutex, Cond, Once, WaitGroup
-- Error type
 
 ##Example
 
