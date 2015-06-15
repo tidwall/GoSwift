@@ -11,7 +11,7 @@ func main() {
 
 	// Create a new channel with `make(chan val-type)`.
 	// Channels are typed by the values they convey.
-	var messages = Chan<String>()
+	let messages = Chan<String>()
 
 	// _Send_ a value into a channel using the `channel <-`
 	// syntax. Here we send `"ping"`  to the `messages`
@@ -21,6 +21,6 @@ func main() {
 	// The `<-channel` syntax _receives_ a value from the
 	// channel. Here we'll receive the `"ping"` message
 	// we sent above and print it out.
-	var msg = <-messages
+	let msg = <-messages
 	println(msg!)
 }

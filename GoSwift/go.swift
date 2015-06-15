@@ -11,35 +11,18 @@
 
 import Foundation
 
-public typealias Error = NSError
-extension Error : Printable, Equatable {
-    public func error() -> String {
-        return description
-    }
-    convenience public init(error : String){
-        self.init(domain: "goswift", code: -1, userInfo: [NSLocalizedDescriptionKey:error])
-    }
-    override public var description : String {
-        return localizedDescription
-    }
-}
-public func ==(lhs: Error, rhs: Error) -> Bool {
-    return lhs.description == rhs.description
-}
-private let pt_entry: @objc_block (UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void> = { (ctx) in
+private let pt_entry: @convention(c) (UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void> = { (ctx) in
     let np = UnsafeMutablePointer<()->()>(ctx)
     np.memory()
     np.destroy()
     np.dealloc(1)
     return nil
 }
-private var pt_entry_imp = imp_implementationWithBlock(unsafeBitCast(pt_entry, AnyObject.self))
-private let pt_entry_fp = CFunctionPointer<(UnsafeMutablePointer<Void>) -> UnsafeMutablePointer<Void>>(pt_entry_imp)
 public func dispatch_thread(block : ()->()){
     let p = UnsafeMutablePointer<()->()>.alloc(1)
     p.initialize(block)
     var t = pthread_t()
-    pthread_create(&t, nil, pt_entry_fp, p)
+    pthread_create(&t, nil, pt_entry, p)
     pthread_detach(t)
 }
 public protocol Locker {
@@ -60,7 +43,7 @@ public class Mutex : Locker {
     public func unlock(){
         pthread_mutex_unlock(&mutex)
     }
-    func lock(closure:()->()){
+    func lock(closure : ()->()){
         lock()
         closure()
         unlock()
@@ -196,7 +179,7 @@ public class Chan<T> : ChanAny {
                 cond.locker.unlock()
                 return (nil, true, false)
             }
-            var msg = msgs.removeAtIndex(0)
+            let msg = msgs.removeAtIndex(0)
             cond.broadcast()
             cond.locker.unlock()
             return (msg, true, true)
@@ -220,7 +203,7 @@ public class Chan<T> : ChanAny {
                 if msgs.count > 0 {
                     flag = true
                     mutex!.unlock()
-                    var msg = msgs.removeAtIndex(0)
+                    let msg = msgs.removeAtIndex(0)
                     cond.broadcast()
                     cond.locker.unlock()
                     return (msg, true, true)
@@ -237,7 +220,7 @@ public class Chan<T> : ChanAny {
                 return (nil, false, true)
             }
             if msgs.count > 0 {
-                var msg = msgs.removeAtIndex(0)
+                let msg = msgs.removeAtIndex(0)
                 cond.broadcast()
                 cond.locker.unlock()
                 return (msg, true, true)
@@ -257,12 +240,12 @@ public func <-<T>(l: Chan<T>, r: T?){
 }
 public prefix func <?<T>(r: Chan<T>) -> (T?, Bool){
     var flag = false
-    let (v, ok, ready) = r.receive(true, mutex: nil, flag: &flag)
+    let (v, ok, _) = r.receive(true, mutex: nil, flag: &flag)
     return (v as? T, ok)
 }
 public prefix func <-<T>(r: Chan<T>) -> T?{
     var flag = false
-    let (v, ok, ready) = r.receive(true, mutex: nil, flag: &flag)
+    let (v, _, _) = r.receive(true, mutex: nil, flag: &flag)
     return v as? T
 }
 public func close<T>(chan : Chan<T>){
@@ -281,20 +264,16 @@ private struct GoPanicError {
 }
 private class GoRoutineStack {
     var error = GoPanicError()
-    var defers : [()->()] = []
     var (jump, jumped) = (UnsafeMutablePointer<Int32>(), false)
-    var (select, cases:[(msg : Any?, ok : Bool)->()], chans:[ChanAny], defalt:(()->())?)  = (false, [], [], nil)
+    var select = false
+    var cases : [(msg : Any?, ok : Bool)->()] = []
+    var chans : [ChanAny] = []
+    var defalt : (()->())?
     init(){
         jump = UnsafeMutablePointer<Int32>(malloc(4*50))
     }
     deinit{
         free(jump)
-    }
-    func unwind(){
-        for var i = defers.count - 1; i >= 0; i-- {
-            defers[i]()
-        }
-        defers = []
     }
 }
 private class GoRoutine {
@@ -302,7 +281,7 @@ private class GoRoutine {
     func $(closure:()->()){
         let s = GoRoutineStack()
         if stack.count > 0 {
-            var ls = stack.last!
+            let ls = stack.last!
             s.error = ls.error
             ls.error.what = nil
         }
@@ -310,7 +289,6 @@ private class GoRoutine {
         if setjmp(s.jump) == 0{
             closure()
         }
-        s.unwind()
         stack.removeLast()
         if s.error.what != nil{
             if stack.count > 0 {
@@ -319,12 +297,6 @@ private class GoRoutine {
                 fatalError("\(s.error.what!)", file: s.error.file, line: s.error.line)
             }
         }
-    }
-    func defer(file : StaticString = __FILE__, line : UWord = __LINE__, closure: ()->()){
-        if stack.count == 0{
-            fatalError("missing ${} context", file: file, line: line)
-        }
-        stack.last!.defers.append({self.${closure()}})
     }
     func panic(what : AnyObject, file : StaticString = __FILE__, line : UWord = __LINE__){
         if stack.count == 0{
@@ -361,14 +333,14 @@ private class GoRoutine {
     }
     func select(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()){
         ${
-            var s = self.stack.last!
+            let s = self.stack.last!
             s.select = true
             closure()
-            var idxs = self.randomInts(s.chans.count)
+            let idxs = self.randomInts(s.chans.count)
             if s.defalt != nil{
                 var (flag, handled) = (false, false)
                 for i in idxs {
-                    var (msg, ok, ready) = s.chans[i].receive(false, mutex: nil, flag: &flag)
+                    let (msg, ok, ready) = s.chans[i].receive(false, mutex: nil, flag: &flag)
                     if ready {
                         s.cases[i](msg: msg, ok: ok)
                         handled = true
@@ -386,9 +358,9 @@ private class GoRoutine {
                     NSThread.sleepForTimeInterval(0.05)
                 }
             } else {
-                var wg = WaitGroup()
+                let wg = WaitGroup()
                 wg.add(idxs.count)
-                var signal : (except : Int)->() = { (except) in
+                let signal : (except : Int)->() = { (except) in
                     for i in idxs {
                         if i != except {
                             s.chans[i].signal()
@@ -396,11 +368,11 @@ private class GoRoutine {
                     }
                 }
                 var flag = false
-                var mutex = Mutex()
+                let mutex = Mutex()
                 for i in idxs {
-                    var (c, f, ci) = (s.chans[i], s.cases[i], i)
+                    let (c, f, ci) = (s.chans[i], s.cases[i], i)
                     dispatch_thread {
-                        var (msg, ok, ready) = c.receive(true, mutex: mutex, flag: &flag)
+                        let (msg, ok, ready) = c.receive(true, mutex: mutex, flag: &flag)
                         if ready {
                             signal(except: ci)
                             f(msg: msg, ok: ok)
@@ -498,21 +470,18 @@ public func $(closure: ()->()){
 public func go(closure: ()->()){
     goapp.go(closure)
 }
-public func defer(file : StaticString = __FILE__, line : UWord = __LINE__, closure: ()->()){
-    goapp.routine().defer(file: file, line: line, closure: closure)
-}
 public func panic(what : AnyObject, file : StaticString = __FILE__, line : UWord = __LINE__){
     goapp.routine().panic(what, file: file, line: line)
 }
 public func recover(file : StaticString = __FILE__, line : UWord = __LINE__) -> AnyObject? {
-    return goapp.routine().recover(file: file, line: line)
+    return goapp.routine().recover(file, line: line)
 }
 public func select(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
-    goapp.routine().select(file: file, line: line, closure: closure)
+    goapp.routine().select(file, line: line, closure: closure)
 }
 public func _case<T>(l : Chan<T>, file : StaticString = __FILE__, line : UWord = __LINE__, closure:(msg : T?, ok : Bool)->()) {
     goapp.routine().case_(l, file: file, line: line, closure: { (msg, ok) in closure(msg: msg as? T, ok: ok) })
 }
 public func _default(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
-    goapp.routine().default_(file: file, line: line, closure: closure)
+    goapp.routine().default_(file, line: line, closure: closure)
 }
