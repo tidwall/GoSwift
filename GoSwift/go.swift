@@ -31,7 +31,7 @@ public protocol Locker {
 }
 public class Mutex : Locker {
     private var mutex = pthread_mutex_t()
-    init(){
+    public init(){
         pthread_mutex_init(&mutex, nil)
     }
     deinit{
@@ -52,7 +52,7 @@ public class Mutex : Locker {
 public class Cond {
     private var cond = pthread_cond_t()
     private var mutex : Mutex
-    init(locker : Locker){
+    public init(locker : Locker){
         if let m = locker as? Mutex{
             self.mutex = m
         } else {
@@ -80,7 +80,7 @@ public class Cond {
 public class Once {
     private var mutex = Mutex()
     private var oncer = false
-    func doit(closure:()->()){
+    public func doit(closure:()->()){
         mutex.lock()
         if oncer{
             mutex.unlock()
@@ -94,7 +94,7 @@ public class Once {
 public class WaitGroup {
     private var cond = Cond(locker: Mutex())
     private var count = 0
-    func add(delta : Int){
+    public func add(delta : Int){
         cond.locker.lock()
         count += delta
         if count < 0 {
@@ -103,10 +103,10 @@ public class WaitGroup {
         cond.broadcast()
         cond.locker.unlock()
     }
-    func done(){
+    public func done(){
         add(-1)
     }
-    func wait(){
+    public func wait(){
         cond.locker.lock()
         while count > 0 {
             cond.wait()
