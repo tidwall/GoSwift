@@ -128,13 +128,13 @@ public class Chan<T> : ChanAny {
     private var cond = Cond(locker: Mutex())
     private var closed = false
     
-    convenience init(){
+    public convenience init(){
         self.init(0)
     }
-    init(_ buffer: Int){
+    public init(_ buffer: Int){
         cap = buffer
     }
-    init(buffer: Int){
+    public init(buffer: Int){
         cap = buffer
     }
     public func count() -> Int{
