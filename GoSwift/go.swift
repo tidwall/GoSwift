@@ -31,7 +31,7 @@ public protocol Locker {
 }
 public class Mutex : Locker {
     private var mutex = pthread_mutex_t()
-    init(){
+    public init(){
         pthread_mutex_init(&mutex, nil)
     }
     deinit{
@@ -52,7 +52,7 @@ public class Mutex : Locker {
 public class Cond {
     private var cond = pthread_cond_t()
     private var mutex : Mutex
-    init(locker : Locker){
+    public init(locker : Locker){
         if let m = locker as? Mutex{
             self.mutex = m
         } else {
@@ -80,7 +80,7 @@ public class Cond {
 public class Once {
     private var mutex = Mutex()
     private var oncer = false
-    func doit(closure:()->()){
+    public func doit(closure:()->()){
         mutex.lock()
         if oncer{
             mutex.unlock()
@@ -94,7 +94,7 @@ public class Once {
 public class WaitGroup {
     private var cond = Cond(locker: Mutex())
     private var count = 0
-    func add(delta : Int){
+    public func add(delta : Int){
         cond.locker.lock()
         count += delta
         if count < 0 {
@@ -103,10 +103,10 @@ public class WaitGroup {
         cond.broadcast()
         cond.locker.unlock()
     }
-    func done(){
+    public func done(){
         add(-1)
     }
-    func wait(){
+    public func wait(){
         cond.locker.lock()
         while count > 0 {
             cond.wait()
@@ -128,13 +128,13 @@ public class Chan<T> : ChanAny {
     private var cond = Cond(locker: Mutex())
     private var closed = false
     
-    convenience init(){
+    public convenience init(){
         self.init(0)
     }
-    init(_ buffer: Int){
+    public init(_ buffer: Int){
         cap = buffer
     }
-    init(buffer: Int){
+    public init(buffer: Int){
         cap = buffer
     }
     public func count() -> Int{
@@ -260,7 +260,7 @@ public func cap<T>(chan : Chan<T>) -> Int{
 private struct GoPanicError {
     var what: AnyObject?
     var file: StaticString = ""
-    var line: UWord = 0
+    var line: UInt = 0
 }
 private class GoRoutineStack {
     var error = GoPanicError()
@@ -298,7 +298,7 @@ private class GoRoutine {
             }
         }
     }
-    func panic(what : AnyObject, file : StaticString = __FILE__, line : UWord = __LINE__){
+    func panic(what : AnyObject, file : StaticString = __FILE__, line : UInt = __LINE__){
         if stack.count == 0{
             fatalError("\(what)", file: file, line: line)
         }
@@ -309,7 +309,7 @@ private class GoRoutine {
             longjmp(s.jump, 1)
         }
     }
-    func recover(file : StaticString = __FILE__, line : UWord = __LINE__) -> AnyObject?{
+    func recover(file : StaticString = __FILE__, line : UInt = __LINE__) -> AnyObject?{
         if stack.count == 0{
             fatalError("missing ${} context", file: file, line: line)
         }
@@ -331,7 +331,7 @@ private class GoRoutine {
         }
         return ints
     }
-    func select(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()){
+    func select(file : StaticString = __FILE__, line : UInt = __LINE__, closure:()->()){
         ${
             let s = self.stack.last!
             s.select = true
@@ -384,7 +384,7 @@ private class GoRoutine {
             }
         }
     }
-    func case_(chan : ChanAny, file : StaticString = __FILE__, line : UWord = __LINE__, closure:(msg : Any?, ok : Bool)->()) {
+    func case_(chan : ChanAny, file : StaticString = __FILE__, line : UInt = __LINE__, closure:(msg : Any?, ok : Bool)->()) {
         if stack.count == 0 || !stack.last!.select {
             fatalError("missing select{} context", file: file, line: line)
         }
@@ -392,7 +392,7 @@ private class GoRoutine {
         s.cases.append(closure)
         s.chans.append(chan)
     }
-    func default_(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
+    func default_(file : StaticString = __FILE__, line : UInt = __LINE__, closure:()->()) {
         if stack.count == 0 || !stack.last!.select {
             fatalError("missing select{} context", file: file, line: line)
         }
@@ -470,18 +470,18 @@ public func $(closure: ()->()){
 public func go(closure: ()->()){
     goapp.go(closure)
 }
-public func panic(what : AnyObject, file : StaticString = __FILE__, line : UWord = __LINE__){
+public func panic(what : AnyObject, file : StaticString = __FILE__, line : UInt = __LINE__){
     goapp.routine().panic(what, file: file, line: line)
 }
-public func recover(file : StaticString = __FILE__, line : UWord = __LINE__) -> AnyObject? {
+public func recover(file : StaticString = __FILE__, line : UInt = __LINE__) -> AnyObject? {
     return goapp.routine().recover(file, line: line)
 }
-public func select(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
+public func select(file : StaticString = __FILE__, line : UInt = __LINE__, closure:()->()) {
     goapp.routine().select(file, line: line, closure: closure)
 }
-public func _case<T>(l : Chan<T>, file : StaticString = __FILE__, line : UWord = __LINE__, closure:(msg : T?, ok : Bool)->()) {
+public func _case<T>(l : Chan<T>, file : StaticString = __FILE__, line : UInt = __LINE__, closure:(msg : T?, ok : Bool)->()) {
     goapp.routine().case_(l, file: file, line: line, closure: { (msg, ok) in closure(msg: msg as? T, ok: ok) })
 }
-public func _default(file : StaticString = __FILE__, line : UWord = __LINE__, closure:()->()) {
+public func _default(file : StaticString = __FILE__, line : UInt = __LINE__, closure:()->()) {
     goapp.routine().default_(file, line: line, closure: closure)
 }
