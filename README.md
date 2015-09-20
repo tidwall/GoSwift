@@ -1,4 +1,4 @@
-#<img src="http://tidwall.github.io/GoSwift/logo.png?raw=true" width="75" height="75">&nbsp;GoSwift - Go Goodies for Swift
+#<img src="https://tidwall.github.io/GoSwift/logo.png?raw=true" width="75" height="75">&nbsp;GoSwift - Go Goodies for Swift
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
