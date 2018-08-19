@@ -135,7 +135,7 @@ Then run `pod install` with CocoaPods 0.36 or newer.
 
 The `import GoSwift` directive is required in order to access GoSwift features.
 
-###Manually
+### Manually
 
 Copy the `GoSwift\go.swift` file into your project.  
 
