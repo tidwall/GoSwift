@@ -1,4 +1,4 @@
-#<img src="https://tidwall.github.io/GoSwift/logo.png?raw=true" width="75" height="75">&nbsp;GoSwift - Go Goodies for Swift
+# <img src="https://tidwall.github.io/GoSwift/logo.png?raw=true" width="75" height="75">&nbsp;GoSwift - Go Goodies for Swift
 
 Bring some of the more powerful features of Go to your iOS / Swift project such as channels, goroutines, and defers.
 
@@ -7,7 +7,7 @@ Bring some of the more powerful features of Go to your iOS / Swift project such 
 **Built for Swift 2.0** - For Swift 1.2 support use v0.1.4 or earlier.
 
 
-##Features
+## Features
 
 - Goroutines
 - Defer
@@ -19,7 +19,7 @@ Bring some of the more powerful features of Go to your iOS / Swift project such 
 - Sync Package
 	- Mutex, Cond, Once, WaitGroup
 
-##Example
+## Example
 
 *Note that the following example and all of the examples in the `examples` directory originated from http://gobyexample.com and Mark McGranaghan*
 
@@ -90,7 +90,7 @@ func main() {
 
 ```
 
-###Run an Example
+### Run an Example
 
 Each example has a `.swift` and `.go` file that contain the same logic.
 
@@ -99,7 +99,7 @@ Each example has a `.swift` and `.go` file that contain the same logic.
 ./run.sh examples/goroutines.go
 ```
 
-##Installation (iOS and OS X)
+## Installation (iOS and OS X)
 
 ### [Carthage]
 
